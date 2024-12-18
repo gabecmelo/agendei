@@ -28,7 +28,7 @@ export class EventsController {
   @Get()
   @UseGuards(AuthGuard('jwt'))
   async getEvents(@Req() req) {
-    return this.eventsService.getUserEvents(req.user.id);
+    return this.eventsService.getUserEvents(req.user.userId);
   }
 
   @Patch('/invite/respond')
