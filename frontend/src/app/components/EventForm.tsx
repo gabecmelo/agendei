@@ -53,7 +53,7 @@ const EventForm = ({ setEvents, start, end, onClose }: any) => {
   };
 
   return (
-    <div className="relative max-w-md mx-auto bg-white shadow-md rounded-lg p-6">
+    <form className="relative max-w-md mx-auto bg-white shadow-md rounded-lg p-6">
       <button
         onClick={onClose}
         className="absolute top-2 text-black right-2 hover:text-red-500 focus:outline-none"
@@ -88,7 +88,7 @@ const EventForm = ({ setEvents, start, end, onClose }: any) => {
       >
         Criar Evento
       </button>
-    </div>
+    </form>
   );
 };
 

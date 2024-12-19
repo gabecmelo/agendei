@@ -21,9 +21,8 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))  
+  @UseGuards(AuthGuard('jwt'))
   async createEvent(@Body() createEventDto: CreateEventDto, @Req() req) {
-    console.log(createEventDto.invitedUsersEmails)
     return this.eventsService.createEvent(createEventDto, req.user);
   }
 
@@ -31,6 +30,14 @@ export class EventsController {
   @UseGuards(AuthGuard('jwt'))
   async getEvents(@Query('invited') invited: string, @Req() req) {
     return this.eventsService.getUserEvents(req.user.userId, invited);
+  }
+
+  @Get(':id/invites')
+  @UseGuards(AuthGuard('jwt'))
+  async getInvites(@Param('id') eventId: string, @Req() req) {
+    const userId = req.user.userId;
+
+    return this.eventsService.getEventInvites(eventId, userId);
   }
 
   @Patch('/invite/respond')

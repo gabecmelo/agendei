@@ -10,11 +10,27 @@ const EmailList = ({
 }) => {
   const [newEmail, setNewEmail] = useState("");
 
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const addEmail = () => {
-    if (!newEmail || emails.includes(newEmail)) {
-      Swal.fire("Aviso", "E-mail inválido ou já adicionado.", "warning");
+    if (!newEmail) {
+      Swal.fire("Aviso", "Por favor, insira um e-mail.", "warning");
       return;
     }
+
+    if (!isValidEmail(newEmail)) {
+      Swal.fire("Erro", "Por favor, insira um e-mail válido.", "error");
+      return;
+    }
+
+    if (emails.includes(newEmail)) {
+      Swal.fire("Aviso", "E-mail já adicionado.", "warning");
+      return;
+    }
+
     setEmails((prev) => [...prev, newEmail]);
     setNewEmail("");
   };
@@ -25,7 +41,7 @@ const EmailList = ({
 
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium mb-1">Convidar Pessoas:</label>
+      <label className="block text-sm font-medium mb-1">Convidar Pessoas: (emails inexistentes não serão adicionados)</label>
       <div className="flex gap-2">
         <input
           type="email"

@@ -31,7 +31,6 @@ export class EventsService {
     const { description, start_time, end_time, invitedUsersEmails } =
       createEventDto;
 
-    // Criar o evento com o criador associado
     const event = this.eventRepository.create({
       description,
       start_time: new Date(start_time),
@@ -40,10 +39,7 @@ export class EventsService {
     });
 
     const savedEvent = await this.eventRepository.save(event);
-
-    // Processar convites, se houver
     if (invitedUsersEmails && invitedUsersEmails.length > 0) {
-      // Buscar usuários convidados pelo e-mail
       const users = await this.userRepository.findBy({
         email: In(invitedUsersEmails),
       });
@@ -56,11 +52,8 @@ export class EventsService {
         }),
       );
 
-      // Salvar convites
       await this.eventInviteRepository.save(invites);
     }
-
-    // Retornar o evento completo com relações carregadas
     return this.eventRepository.findOne({
       where: { id: savedEvent.id },
       relations: ['creator', 'invites', 'invites.user'],
@@ -105,6 +98,14 @@ export class EventsService {
     });
   }
 
+  async getEventInvites(eventId: string, userId: string) {
+    const invites = await this.eventInviteRepository.find({
+      where: { event: { id: eventId } },
+      relations: ['user'],
+    });
+    return invites;
+  }
+
   async deleteEvent(eventId: string, userId: string) {
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
@@ -119,7 +120,6 @@ export class EventsService {
       );
 
     await this.eventRepository.remove(event);
-    return {message: 'Evento deletado com sucesso'}
+    return { message: 'Evento deletado com sucesso' };
   }
-  
 }
