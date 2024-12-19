@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -20,15 +21,16 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))  
   async createEvent(@Body() createEventDto: CreateEventDto, @Req() req) {
+    console.log(createEventDto.invitedUsersEmails)
     return this.eventsService.createEvent(createEventDto, req.user);
   }
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  async getEvents(@Req() req) {
-    return this.eventsService.getUserEvents(req.user.userId);
+  async getEvents(@Query('invited') invited: string, @Req() req) {
+    return this.eventsService.getUserEvents(req.user.userId, invited);
   }
 
   @Patch('/invite/respond')

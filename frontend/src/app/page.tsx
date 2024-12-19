@@ -32,9 +32,6 @@ const HomePage = () => {
           localStorage.setItem("token", response.access_token);
           Swal.fire("Sucesso!", "Login efetuado com sucesso!", "success");
           router.push("/calendar");
-        } else {
-          console.log(response);
-          Swal.fire("Erro!", "Falha no login. Verifique suas credenciais.", "error");
         }
       } else {
         const response = await fetchAPI(`users/register`, {
@@ -48,16 +45,15 @@ const HomePage = () => {
         if (response.id) {
           Swal.fire("Sucesso!", "Registro realizado com sucesso!", "success");
           setIsLogin(true);
-        } else {
-          Swal.fire({
-            icon: "warning",
-            title: "Ocorreu um erro ao registrar",
-            footer: response.message,
-          });
-        }
+        }      
       }
-    } catch (error) {
-      console.error("Erro:", error);
+    } catch (error: any) {
+      console.error(error.message);
+      Swal.fire({
+        icon: "warning",
+        title: "Ocorreu um erro",
+        footer: error.message,
+      });
     }
   };
 

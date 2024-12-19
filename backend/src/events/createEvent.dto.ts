@@ -22,5 +22,5 @@ export class CreateEventDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  invitedUserIds: string[];
+  invitedUsersEmails: string[];
 }
