@@ -7,7 +7,7 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Swal from "sweetalert2";
 import fetchAPI from "../utils/api";
-import CreateEventForm from '../components/CreateEventForm';
+import CreateEventForm from "../components/CreateEventForm";
 
 const localizer = momentLocalizer(moment);
 
@@ -101,9 +101,7 @@ const CalendarPage = () => {
       if (response.message) {
         Swal.fire("Sucesso!", response.message, "success");
         setUserInvites((prev: any) =>
-          prev.map((invite: any) =>
-            invite.id === inviteId ? { ...invite, status } : invite
-          )
+          prev.map((invite: any) => (invite.id === inviteId ? { ...invite, status } : invite))
         );
       }
     } catch (error) {
@@ -112,6 +110,14 @@ const CalendarPage = () => {
   };
 
   const handleNewEvent = ({ start, end }: any) => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+  
+    if (start < now) {
+      Swal.fire("Aviso", "Não é possível criar eventos em dias passados.", "warning");
+      return;
+    }
+  
     setSelectedStart(start);
     setSelectedEnd(end);
     setShowForm(true);

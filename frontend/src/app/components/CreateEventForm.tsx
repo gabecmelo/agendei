@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import fetchAPI from '../utils/api';
 
-const CreateEventForm = ({ setEvents }: any) => {
+const CreateEventForm = ({ setEvents, start, end, onClose }: any) => {
+  const now = new Date(new Date().getTime() - 3 * 60 * 60 * 1000);
+  const formatDate = (date: Date) => date.toISOString().slice(0, 16);
+
   const [description, setDescription] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+  const [startTime, setStartTime] = useState(formatDate(start || now));
+  const [endTime, setEndTime] = useState(formatDate(end || now));
   const [invitedEmails, setInvitedEmails] = useState<string[]>([]);
   const [newEmail, setNewEmail] = useState("");
 
@@ -23,20 +26,20 @@ const CreateEventForm = ({ setEvents }: any) => {
   };
 
   const handleSubmit = async () => {
-    if (!description || !start || !end) {
+    if (!description || !startTime || !endTime) {
       Swal.fire("Erro", "Por favor, preencha todos os campos obrigatórios.", "error");
       return;
     }
 
     const token = localStorage.getItem("token");
-    try {      
+    try {
       const response = await fetchAPI("events", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           description,
-          start_time: start,
-          end_time: end,
+          start_time: startTime,
+          end_time: endTime,
           invitedUsersEmails: invitedEmails,
         }),
       });
@@ -53,6 +56,7 @@ const CreateEventForm = ({ setEvents }: any) => {
             status: "CREATOR",
           },
         ]);
+        onClose(); // Fecha o formulário ao criar o evento
       }
     } catch (error) {
       Swal.fire("Erro", "Não foi possível criar o evento.", "error");
@@ -60,7 +64,13 @@ const CreateEventForm = ({ setEvents }: any) => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-md rounded-lg p-6">
+    <div className="relative max-w-md mx-auto bg-white shadow-md rounded-lg p-6">
+      <button
+        onClick={onClose}
+        className="absolute top-2 right-2 text-gray-600 hover:text-red-500 focus:outline-none"
+      >
+        &#x2715; {/* Ícone "X" */}
+      </button>
       <h2 className="text-xl font-semibold mb-4">Criar Evento</h2>
       <form>
         <div className="mb-4">
@@ -77,8 +87,9 @@ const CreateEventForm = ({ setEvents }: any) => {
           <label className="block text-sm font-medium mb-1">Início:</label>
           <input
             type="datetime-local"
-            value={start}
-            onChange={(e) => setStart(e.target.value)}
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+            min={formatDate(now)}
             className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-200"
           />
         </div>
@@ -86,8 +97,8 @@ const CreateEventForm = ({ setEvents }: any) => {
           <label className="block text-sm font-medium mb-1">Fim:</label>
           <input
             type="datetime-local"
-            value={end}
-            onChange={(e) => setEnd(e.target.value)}
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
             className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-200"
           />
         </div>
