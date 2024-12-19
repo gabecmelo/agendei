@@ -12,53 +12,36 @@ const HomePage = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      router.push("/calendar");
-    }
+    if (token) router.push("/calendar");
   }, [router]);
 
   const handleAuthSubmit = async (data: { email: string; password: string; name?: string }) => {
     try {
-      if (isLogin) {
-        const response = await fetchAPI("auth/login", {
-          method: "POST",
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-          }),
-        });
+      const endpoint = isLogin ? "auth/login" : "users/register";
+      const body = isLogin
+        ? { email: data.email, password: data.password }
+        : { name: data.name, email: data.email, password: data.password };
 
-        if (response.access_token) {
-          localStorage.setItem("token", response.access_token);
-          Swal.fire("Sucesso!", "Login efetuado com sucesso!", "success");
-          router.push("/calendar");
-        }
-      } else {
-        const response = await fetchAPI(`users/register`, {
-          method: "POST",
-          body: JSON.stringify({
-            name: data.name,
-            email: data.email,
-            password: data.password,
-          }),
-        });
-        if (response.id) {
-          Swal.fire("Sucesso!", "Registro realizado com sucesso!", "success");
-          setIsLogin(true);
-        }      
+      const response = await fetchAPI(endpoint, {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+
+      if (isLogin && response.access_token) {
+        localStorage.setItem("token", response.access_token);
+        Swal.fire("Sucesso!", "Login efetuado com sucesso!", "success");
+        router.push("/calendar");
+      } else if (!isLogin && response.id) {
+        Swal.fire("Sucesso!", "Registro realizado com sucesso!", "success");
+        setIsLogin(true);
       }
     } catch (error: any) {
-      console.error(error.message);
-      Swal.fire({
-        icon: "warning",
-        title: "Ocorreu um erro",
-        footer: error.message,
-      });
+      Swal.fire("Erro", error.message || "Ocorreu um erro", "error");
     }
   };
 
   return (
-    <div className="min-h-screen text-gray-700 bg-gray-100 flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 text-gray-700">
       <div className="p-8 bg-white shadow-lg rounded-md w-full max-w-lg">
         <AuthForm type={isLogin ? "login" : "register"} onSubmit={handleAuthSubmit} />
         <p className="mt-4 text-center">
