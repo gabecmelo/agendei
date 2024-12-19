@@ -119,5 +119,7 @@ export class EventsService {
       );
 
     await this.eventRepository.remove(event);
+    return {message: 'Evento deletado com sucesso'}
   }
+  
 }
