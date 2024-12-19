@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={` bg-gray-100 text-gray-600 antialiased`}
+        className={` bg-gray-100 text-gray-600 antialiased vsc-initialized`}
       >
         {children}
       </body>

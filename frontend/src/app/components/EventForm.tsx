@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
-import fetchAPI from '../utils/api';
+import fetchAPI from "../utils/api";
+import { GoX } from 'react-icons/go'
 
-const CreateEventForm = ({ setEvents, start, end, onClose }: any) => {
+const EventForm = ({ setEvents, start, end, onClose }: any) => {
   const now = new Date(new Date().getTime() - 3 * 60 * 60 * 1000);
   const formatDate = (date: Date) => date.toISOString().slice(0, 16);
 
@@ -56,7 +57,7 @@ const CreateEventForm = ({ setEvents, start, end, onClose }: any) => {
             status: "CREATOR",
           },
         ]);
-        onClose(); // Fecha o formulário ao criar o evento
+        onClose();
       }
     } catch (error) {
       Swal.fire("Erro", "Não foi possível criar o evento.", "error");
@@ -67,9 +68,9 @@ const CreateEventForm = ({ setEvents, start, end, onClose }: any) => {
     <div className="relative max-w-md mx-auto bg-white shadow-md rounded-lg p-6">
       <button
         onClick={onClose}
-        className="absolute top-2 right-2 text-gray-600 hover:text-red-500 focus:outline-none"
+        className="absolute top-2 text-black right-2 hover:text-red-500 focus:outline-none"
       >
-        &#x2715; {/* Ícone "X" */}
+        <GoX size={20} />
       </button>
       <h2 className="text-xl font-semibold mb-4">Criar Evento</h2>
       <form>
@@ -150,4 +151,4 @@ const CreateEventForm = ({ setEvents, start, end, onClose }: any) => {
   );
 };
 
-export default CreateEventForm;
+export default EventForm;

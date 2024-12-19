@@ -7,7 +7,15 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Swal from "sweetalert2";
 import fetchAPI from "../utils/api";
-import CreateEventForm from "../components/CreateEventForm";
+import EventForm from "../components/EventForm";
+
+type Event = {
+  id: number;
+  title: string;
+  start: Date | null;
+  end: Date | null;
+  status: string;
+}
 
 const localizer = momentLocalizer(moment);
 
@@ -18,6 +26,7 @@ const CalendarPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [selectedStart, setSelectedStart] = useState<Date | null>(null);
   const [selectedEnd, setSelectedEnd] = useState<Date | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -66,9 +75,29 @@ const CalendarPage = () => {
     });
   }, [router]);
 
-  const handleEventSelect = (event: any) => {
+  const deleteEvent = (event: Event) => {
+    const token = localStorage.getItem("token");
+    fetchAPI(`events/${event.id}`, {      
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    setEvents(events.filter((e: Event) => e.id !== event.id));
+
+  }
+
+  const handleEventSelect = (event: Event) => {
     if (event.status === "CREATOR") {
-      Swal.fire("Evento", "Esse é seu evento. Gerencie no painel.", "info");
+      Swal.fire({
+        title: event.title,
+        icon: 'question',
+        text: "Deletar evento?",
+        showDenyButton: true,
+        confirmButtonText: "Deletar",
+        denyButtonText: "Fechar",
+      }).then((result) => {
+        if (result.isConfirmed) deleteEvent(event);
+        
+      }) 
     } else {
       Swal.fire({
         title: "Convite",
@@ -112,12 +141,12 @@ const CalendarPage = () => {
   const handleNewEvent = ({ start, end }: any) => {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
-  
+
     if (start < now) {
       Swal.fire("Aviso", "Não é possível criar eventos em dias passados.", "warning");
       return;
     }
-  
+
     setSelectedStart(start);
     setSelectedEnd(end);
     setShowForm(true);
@@ -127,6 +156,7 @@ const CalendarPage = () => {
     setShowForm(false);
     setSelectedStart(null);
     setSelectedEnd(null);
+    setSelectedEvent(null);
   };
 
   return (
@@ -146,11 +176,12 @@ const CalendarPage = () => {
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-md shadow-lg w-96">
-            <CreateEventForm
+            <EventForm
               setEvents={setEvents}
               start={selectedStart}
               end={selectedEnd}
               onClose={closeForm}
+              eventToEdit={selectedEvent}
             />
           </div>
         </div>
