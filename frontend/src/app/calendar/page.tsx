@@ -156,17 +156,17 @@ const CalendarPage = () => {
         body: JSON.stringify({ inviteId, status }),
       });
 
+
       if (response.message) {
         Swal.fire("Sucesso!", response.message, "success");        
         setUserInvites((prev: EventInvite[]) =>{
-          console.log(prev[0])
-          console.log("teste: ", prev)
           return prev.map((invite: EventInvite) => (invite.id === inviteId ? { ...invite, status } : invite))
         }
         );
       }
     } catch (error) {
-      Swal.fire("Erro", "Não foi possível responder ao convite.", "error");
+      Swal.fire("Erro", "Não foi possível responder ao convite. Reinicie a página e tente novamente", "error");
+      console.error(error)
     }
   };
 
