@@ -14,8 +14,7 @@
 O projeto foi desenvolvido utilizando as seguintes tecnologias:
 
 - **Frontend**: Next.js, React, Tailwind CSS
-- **Backend**: Node.js, Express, JWT, MySQL
-- **Autenticação**: Next-Auth
+- **Backend**: Node.js, Nest.js, JWT, MySQL
 
 ## Screenshots
 
