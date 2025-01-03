@@ -39,7 +39,3 @@ Configure o arquivo `.env.local` com as seguintes variáveis:
 4. Inicie o servidor:
 
    ```npm run dev```
-
----
-
-### Para mais informações, consulte os READMEs do _`Backend`_ e do _`Frontend`_. Ambos contêm detalhes sobre a configuração e uso de cada parte do projeto.
