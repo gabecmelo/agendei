@@ -30,13 +30,7 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 
 ## Como Rodar o Projeto
 
-### Backend
-
-Para mais detalhes sobre o backend, consulte o README do **Backend**.
-
-### Frontend
-
-Para mais detalhes sobre o frontend, consulte o README do **Frontend**.
+ Para mais informações, consulte os READMEs do _`Backend`_ e do _`Frontend`_. Ambos contêm detalhes sobre a configuração e uso de cada parte do projeto.
 
 ## Contribuição
 
